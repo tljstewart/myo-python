@@ -21,25 +21,29 @@
 from __future__ import print_function
 import myo
 import time
+from pathlib import Path
 
 
 def main():
-  myo.init()
-  hub = myo.Hub()
-  listener = myo.ApiDeviceListener()
+    myo_sdk_path = Path(Path(__file__).parent.parent / "sdk")
+    if myo_sdk_path.exists():
+         print("Found Myo SDK")
+    myo.init(sdk_path = str(myo_sdk_path))
+    hub = myo.Hub()
+    listener = myo.ApiDeviceListener()
 
-  with hub.run_in_background(listener.on_event):
-    print("Waiting for a Myo to connect ...")
-    device = listener.wait_for_single_device(2)
-    if not device:
-      print("No Myo connected after 2 seconds.")
-      return
+    with hub.run_in_background(listener.on_event):
+        print("Waiting for a Myo to connect ...")
+        device = listener.wait_for_single_device(2)
+        if not device:
+            print("No Myo connected after 2 seconds.")
+            return
 
     print("Hello, Myo! Requesting RSSI ...")
     device.request_rssi()
     while hub.running and device.connected and not device.rssi:
-      print("Waiting for RRSI...")
-      time.sleep(0.001)
+        print("Waiting for RRSI...")
+        time.sleep(0.001)
     print("RSSI:", device.rssi)
     print("Goodbye, Myo!")
 

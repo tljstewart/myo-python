@@ -25,6 +25,7 @@ import collections
 import myo
 import time
 import sys
+from pathlib import Path
 
 
 class EmgRate(myo.DeviceListener):
@@ -55,12 +56,15 @@ class EmgRate(myo.DeviceListener):
 
 
 def main():
-  myo.init()
-  hub = myo.Hub()
-  listener = EmgRate(n=50)
-  while hub.run(listener.on_event, 500):
-    print("\r\033[KEMG Rate:", listener.rate, end='')
-    sys.stdout.flush()
+    myo_sdk_path = Path(Path(__file__).parent.parent / "sdk")
+    if myo_sdk_path.exists():
+         print("Found Myo SDK")
+    myo.init(sdk_path = str(myo_sdk_path))
+    hub = myo.Hub()
+    listener = EmgRate(n=50)
+    while hub.run(listener.on_event, 500):
+        print("\r\033[KEMG Rate:", listener.rate, end='')
+        sys.stdout.flush()
 
 
 if __name__ == '__main__':

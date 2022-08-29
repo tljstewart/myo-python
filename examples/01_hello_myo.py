@@ -26,6 +26,7 @@ how to stop the event flow when the double tap pose is recognized.
 
 from __future__ import print_function
 import myo
+from pathlib import Path
 
 
 class Listener(myo.DeviceListener):
@@ -44,9 +45,12 @@ class Listener(myo.DeviceListener):
 
 
 if __name__ == '__main__':
-  myo.init()
-  hub = myo.Hub()
-  listener = Listener()
-  while hub.run(listener.on_event, 500):
-    pass
-  print('Bye, bye!')
+    myo_sdk_path = Path(Path(__file__).parent.parent / "sdk")
+    if myo_sdk_path.exists():
+         print("Found Myo SDK")
+    myo.init(sdk_path = str(myo_sdk_path))
+    hub = myo.Hub()
+    listener = Listener()
+    while hub.run(listener.on_event, 500):
+        pass
+    print('Bye, bye!')

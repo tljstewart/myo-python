@@ -23,6 +23,7 @@
 from matplotlib import pyplot as plt
 from collections import deque
 from threading import Lock, Thread
+from pathlib import Path
 
 import myo
 import numpy as np
@@ -58,7 +59,7 @@ class Plot(object):
     self.n = listener.n
     self.listener = listener
     self.fig = plt.figure()
-    self.axes = [self.fig.add_subplot('81' + str(i)) for i in range(1, 9)]
+    self.axes = [self.fig.add_subplot(int('81' + str(i))) for i in range(1, 9)]
     [(ax.set_ylim([-100, 100])) for ax in self.axes]
     self.graphs = [ax.plot(np.arange(self.n), np.zeros(self.n))[0] for ax in self.axes]
     plt.ion()
@@ -80,11 +81,14 @@ class Plot(object):
 
 
 def main():
-  myo.init()
-  hub = myo.Hub()
-  listener = EmgCollector(512)
-  with hub.run_in_background(listener.on_event):
-    Plot(listener).main()
+    myo_sdk_path = Path(Path(__file__).parent.parent / "sdk")
+    if myo_sdk_path.exists():
+         print("Found Myo SDK")
+    myo.init(sdk_path = str(myo_sdk_path))
+    hub = myo.Hub()
+    listener = EmgCollector(512)
+    with hub.run_in_background(listener.on_event):
+        Plot(listener).main()
 
 
 if __name__ == '__main__':
