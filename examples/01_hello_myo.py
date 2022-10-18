@@ -30,27 +30,26 @@ from pathlib import Path
 
 
 class Listener(myo.DeviceListener):
+    def on_connected(self, event):
+        print("Hello, '{}'! Double tap to exit.".format(event.device_name))
+        event.device.vibrate(myo.VibrationType.short)
+        event.device.request_battery_level()
 
-  def on_connected(self, event):
-    print("Hello, '{}'! Double tap to exit.".format(event.device_name))
-    event.device.vibrate(myo.VibrationType.short)
-    event.device.request_battery_level()
+    def on_battery_level(self, event):
+        print("Your battery level is:", event.battery_level)
 
-  def on_battery_level(self, event):
-    print("Your battery level is:", event.battery_level)
-
-  def on_pose(self, event):
-    if event.pose == myo.Pose.double_tap:
-      return False
+    def on_pose(self, event):
+        if event.pose == myo.Pose.double_tap:
+            return False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     myo_sdk_path = Path(Path(__file__).parent.parent / "sdk")
     if myo_sdk_path.exists():
-         print("Found Myo SDK")
-    myo.init(sdk_path = str(myo_sdk_path))
+        print("Found Myo SDK")
+    myo.init(sdk_path=str(myo_sdk_path))
     hub = myo.Hub()
     listener = Listener()
     while hub.run(listener.on_event, 500):
         pass
-    print('Bye, bye!')
+    print("Bye, bye!")

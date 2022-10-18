@@ -27,8 +27,8 @@ from pathlib import Path
 def main():
     myo_sdk_path = Path(Path(__file__).parent.parent / "sdk")
     if myo_sdk_path.exists():
-         print("Found Myo SDK")
-    myo.init(sdk_path = str(myo_sdk_path))
+        print("Found Myo SDK")
+    myo.init(sdk_path=str(myo_sdk_path))
     hub = myo.Hub()
     listener = myo.ApiDeviceListener()
 
@@ -49,4 +49,4 @@ def main():
 
 
 if __name__ == "__main__":
-  main()
+    main()
